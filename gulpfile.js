@@ -3,15 +3,9 @@
 var pkg = require('./package.json'),
   gulp = require('gulp'),
   gutil = require('gulp-util'),
-  plumber = require('gulp-plumber'),
-  rename = require('gulp-rename'),
   connect = require('gulp-connect'),
   uglify = require('gulp-uglify'),
-  stylus = require('gulp-stylus'),
-  autoprefixer = require('gulp-autoprefixer'),
-  csso = require('gulp-csso'),
   del = require('del'),
-  through = require('through'),
   opn = require('opn'),
   ghpages = require('gh-pages'),
   path = require('path'),
@@ -19,55 +13,29 @@ var pkg = require('./package.json'),
   usemin = require('gulp-usemin'),
   rev = require('gulp-rev'),
   minifyCss = require('gulp-minify-css'),
-  isDist = process.argv.indexOf('serve') === -1;
-
-gulp.task('js', ['clean:js'], function() {
-  return gulp.src('src/scripts/main.js')
-    .pipe(isDist ? through() : plumber())
-    .pipe(isDist ? uglify() : through())
-    .pipe(rename('build.js'))
-    .pipe(gulp.dest('dist/build'))
-    .pipe(connect.reload());
-});
-
-gulp.task('html', ['clean:html', 'bower'], function() {
-  return gulp.src('src/index.html')
-    .pipe(gulp.dest('dist'))
-    .pipe(connect.reload());
-});
-
-gulp.task('css', ['clean:css'], function() {
-  return gulp.src('src/styles/main.styl')
-    .pipe(isDist ? through() : plumber())
-    .pipe(stylus({
-      // Allow CSS to be imported from node_modules and bower_components
-      'include css': true,
-      'paths': ['./node_modules', './bower_components']
-    }))
-    .pipe(autoprefixer('last 2 versions', { map: false }))
-    .pipe(isDist ? csso() : through())
-    .pipe(rename('build.css'))
-    .pipe(gulp.dest('dist/build'))
-    .pipe(connect.reload());
-});
+  autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('images', ['clean:images'], function() {
   return gulp.src('src/images/**/*')
-    .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('wiredep', function () {
+  gulp.src('src/index.html')
+    .pipe(wiredep())
+    .pipe(gulp.dest('src'))
     .pipe(connect.reload());
 });
 
-gulp.task('bower', function () {
-  gulp.src('src/index.html')
-    .pipe(wiredep())
-    .pipe(gulp.dest('src'));
-});
-
-gulp.task('usemin', function () {
+gulp.task('usemin', ['clean:html', 'clean:js', 'clean:css'], function () {
   return gulp.src('src/index.html')
       .pipe(usemin({
-        css: [minifyCss(), 'concat', rev()],
-        js: [uglify(), rev()]
+        css: [
+          autoprefixer('last 2 versions', { map: false }),
+          minifyCss(),
+          'concat'
+        ], //, rev()
+        js: [uglify()]
       }))
       .pipe(gulp.dest('dist'));
 });
@@ -81,21 +49,29 @@ gulp.task('clean:html', function(done) {
 });
 
 gulp.task('clean:js', function(done) {
-  del('dist/build/build.js', done);
+  del('dist/scripts', done);
 });
 
 gulp.task('clean:css', function(done) {
-  del('dist/build/build.css', done);
+  del('dist/styles', done);
 });
 
 gulp.task('clean:images', function(done) {
   del('dist/images', done);
 });
 
-gulp.task('connect', ['build'], function() {
+gulp.task('connect', function() {
   connect.server({
-    root: 'dist',
-    livereload: true
+    root: 'src',
+    livereload: true,
+    middleware: function (connect) {
+      return [
+        connect().use(
+          '/bower_components',
+          connect.static('./bower_components')
+        )
+      ];
+    }
   });
 });
 
@@ -104,21 +80,25 @@ gulp.task('open', ['connect'], function (done) {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.html', ['html']);
-  gulp.watch('src/styles/**/*.styl', ['css']);
-  gulp.watch('src/images/**/*', ['images']);
   gulp.watch([
-    'src/scripts/**/*.js',
-    'bespoke-theme-*/dist/*.js' // Allow themes to be developed in parallel
-  ], ['js']);
+      'src/**/*.html',
+      'src/styles/**/*.css',
+      'src/images/**/*',
+      'src/scripts/**/*.js'
+    ])
+    .on('change', function(file) {
+      gulp.src(file.path).pipe(connect.reload());
+    });
+  gulp.watch('bower.json', ['wiredep']);
 });
+
 
 gulp.task('deploy', ['build'], function(done) {
   ghpages.publish(path.join(__dirname, 'dist'), { logger: gutil.log }, done);
 });
 
-gulp.task('build', ['js', 'html', 'css', 'images']);
+gulp.task('build', ['wiredep', 'usemin', 'images']);
 
-gulp.task('serve', ['open', 'watch']);
+gulp.task('serve', ['wiredep', 'open', 'watch']);
 
 gulp.task('default', ['build']);
