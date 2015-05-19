@@ -6,7 +6,6 @@ var pkg = require('./package.json'),
   plumber = require('gulp-plumber'),
   rename = require('gulp-rename'),
   connect = require('gulp-connect'),
-  browserify = require('gulp-browserify'),
   uglify = require('gulp-uglify'),
   stylus = require('gulp-stylus'),
   autoprefixer = require('gulp-autoprefixer'),
@@ -16,19 +15,22 @@ var pkg = require('./package.json'),
   opn = require('opn'),
   ghpages = require('gh-pages'),
   path = require('path'),
+  wiredep = require('wiredep').stream,
+  usemin = require('gulp-usemin'),
+  rev = require('gulp-rev'),
+  minifyCss = require('gulp-minify-css'),
   isDist = process.argv.indexOf('serve') === -1;
 
 gulp.task('js', ['clean:js'], function() {
   return gulp.src('src/scripts/main.js')
     .pipe(isDist ? through() : plumber())
-    .pipe(browserify({ transform: ['debowerify'], debug: !isDist }))
     .pipe(isDist ? uglify() : through())
     .pipe(rename('build.js'))
     .pipe(gulp.dest('dist/build'))
     .pipe(connect.reload());
 });
 
-gulp.task('html', ['clean:html'], function() {
+gulp.task('html', ['clean:html', 'bower'], function() {
   return gulp.src('src/index.html')
     .pipe(gulp.dest('dist'))
     .pipe(connect.reload());
@@ -53,6 +55,21 @@ gulp.task('images', ['clean:images'], function() {
   return gulp.src('src/images/**/*')
     .pipe(gulp.dest('dist/images'))
     .pipe(connect.reload());
+});
+
+gulp.task('bower', function () {
+  gulp.src('src/index.html')
+    .pipe(wiredep())
+    .pipe(gulp.dest('src'));
+});
+
+gulp.task('usemin', function () {
+  return gulp.src('src/index.html')
+      .pipe(usemin({
+        css: [minifyCss(), 'concat', rev()],
+        js: [uglify(), rev()]
+      }))
+      .pipe(gulp.dest('dist'));
 });
 
 gulp.task('clean', function(done) {
