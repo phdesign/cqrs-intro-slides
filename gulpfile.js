@@ -14,7 +14,8 @@ var pkg = require('./package.json'),
   rev = require('gulp-rev'),
   minifyCss = require('gulp-minify-css'),
   autoprefixer = require('gulp-autoprefixer'),
-  less = require('gulp-less');
+  less = require('gulp-less'),
+  plumber = require('gulp-plumber');
 
 gulp.task('images', ['clean:images'], function() {
   return gulp.src('src/images/**/*')
@@ -22,9 +23,10 @@ gulp.task('images', ['clean:images'], function() {
 });
 
 gulp.task('less', function () {
-  gulp.src('src/styles/style.less') //path to your main less file
+  gulp.src('src/styles/style.less')
+    .pipe(plumber())
     .pipe(less())
-    .pipe(gulp.dest('src/styles')); // your output folder
+    .pipe(gulp.dest('src/styles'));
 });
 
 gulp.task('wiredep', function () {
