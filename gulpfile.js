@@ -13,11 +13,18 @@ var pkg = require('./package.json'),
   usemin = require('gulp-usemin'),
   rev = require('gulp-rev'),
   minifyCss = require('gulp-minify-css'),
-  autoprefixer = require('gulp-autoprefixer');
+  autoprefixer = require('gulp-autoprefixer'),
+  less = require('gulp-less');
 
 gulp.task('images', ['clean:images'], function() {
   return gulp.src('src/images/**/*')
     .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('less', function () {
+  gulp.src('src/styles/style.less') //path to your main less file
+    .pipe(less())
+    .pipe(gulp.dest('src/styles')); // your output folder
 });
 
 gulp.task('wiredep', function () {
@@ -90,6 +97,7 @@ gulp.task('watch', function() {
       gulp.src(file.path).pipe(connect.reload());
     });
   gulp.watch('bower.json', ['wiredep']);
+  gulp.watch('src/styles/**/*.less', ['less']);
 });
 
 
@@ -97,8 +105,8 @@ gulp.task('deploy', ['build'], function(done) {
   ghpages.publish(path.join(__dirname, 'dist'), { logger: gutil.log }, done);
 });
 
-gulp.task('build', ['wiredep', 'usemin', 'images']);
+gulp.task('build', ['wiredep', 'less', 'usemin', 'images']);
 
-gulp.task('serve', ['wiredep', 'open', 'watch']);
+gulp.task('serve', ['wiredep', 'less', 'open', 'watch']);
 
 gulp.task('default', ['build']);
