@@ -22,10 +22,11 @@ gulp.task('images', ['clean:images'], function() {
         .pipe(gulp.dest('dist/images'));
 });
 
-gulp.task('less', function () {
+gulp.task('css', function () {
     gulp.src('src/styles/style.less')
         .pipe(plumber())
         .pipe(less())
+        .pipe(autoprefixer('last 2 versions', { map: false }))
         .pipe(gulp.dest('src/styles'));
 });
 
@@ -36,12 +37,11 @@ gulp.task('wiredep', function () {
         .pipe(connect.reload());
 });
 
-gulp.task('usemin', ['clean:html', 'clean:js', 'clean:css', 'less'], function () {
+gulp.task('usemin', ['clean:html', 'clean:js', 'clean:css', 'css'], function () {
     return gulp.src('src/index.html')
             .pipe(plumber())
             .pipe(usemin({
                 css: [
-                    autoprefixer('last 2 versions', { map: false }),
                     minifyCss(),
                     'concat'
                 ], //, rev()
@@ -100,7 +100,7 @@ gulp.task('watch', function() {
             gulp.src(file.path).pipe(connect.reload());
         });
     gulp.watch('bower.json', ['wiredep']);
-    gulp.watch('src/styles/**/*.less', ['less']);
+    gulp.watch('src/styles/**/*.less', ['css']);
 });
 
 
@@ -108,8 +108,8 @@ gulp.task('deploy', ['build'], function(done) {
     ghpages.publish(path.join(__dirname, 'dist'), { logger: gutil.log }, done);
 });
 
-gulp.task('build', ['wiredep', 'less', 'usemin', 'images']);
+gulp.task('build', ['wiredep', 'css', 'usemin', 'images']);
 
-gulp.task('serve', ['wiredep', 'less', 'open', 'watch']);
+gulp.task('serve', ['wiredep', 'css', 'open', 'watch']);
 
 gulp.task('default', ['build']);
