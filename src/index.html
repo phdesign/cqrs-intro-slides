@@ -17,56 +17,47 @@
             <section>
                 <h1>An Introduction to CQRS</h1>
             </section>
-            <section>
-                <h2>Keyboard Interaction</h2>
-                <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-keys">bespoke-keys</a></h3>
-            </section>
-            <section>
-                <h2>Touch Interaction</h2>
-                <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-touch">bespoke-touch</a></h3>
-            </section>
-            <section>
-                <h2>Responsive Slides</h2>
-                <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-scale">bespoke-scale</a></h3>
-            </section>
-            <section>
-                <h2>Bullet List</h2>
-                <h3 class="bullet">Powered by <a href="https://github.com/markdalgleish/bespoke-bullets">bespoke-bullets</a></h3>
+            <section data-bespoke-state="white">
+                <h2>What is CQRS</h2>
                 <ul>
-                    <li>Bullet 1</li>
-                    <li>Bullet 2</li>
-                    <li>Bullet 3</li>
+                    <li>Command Query Responsibility Separation</li>
+                    <li>Separating write from <span class="strikethrough">wrong</span> read</li>
                 </ul>
             </section>
             <section>
-                <h2>Syntax Highlighting</h2>
-                <h3>Powered by <a href="http://twitter.com/LeaVerou">Lea Verou</a>'s <a href="https://github.com/LeaVerou/prism">Prism</a></h3>
-                <pre><code class="language-javascript">bespoke.from('article', [
-    classes(),
-    keys(),
-    touch(),
-    bullets('li, .bullet')
-]);
-</code></pre>
+                <h2>What CQRS isn't</h2>
+                <ul>
+                    <li>Domain Driven Design (DDD)</li>
+                    <li>Event Sourcing</li>
+                </ul>
             </section>
-            <section data-bespoke-hash="named-route">
-                <h2>Named Route</h2>
-                <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-hash">bespoke-hash</a></h3>
-                <p>Look up! This route has been named with a <em>'data-bespoke-hash'</em> attribute.</p>
-            </section>
-            <section data-bespoke-backdrop="emphatic" class="emphatic-text">
-                <h2>Emphatic Slide!</h2>
-                <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-backdrop">bespoke-backdrop</a></h3>
+            <section data-bespoke-backdrop="space" class="dark">
+                <h2>In The Beginning <br/>There Were Tests</h2>
             </section>
             <section>
-                <h2 class="bullet">Just the beginning...</h2><br>
+                <h2>Command vs. Event</h2>
                 <ul>
-                    <li>Edit HTML in <em>'src/index.html'</em></li>
-                    <li>Edit <a href="http://lesscss.org/">LESS</a> styles in <em>'src/styles/style.less'</em></li>
-                    <li>Edit JavaScript in <em>'src/scripts/main.js'</em></li>
-                </ul><br>
+                    <li>Commands are requests to our domain that may be accepted or rejected</li>
+                    <li>Events describe what has occurred and are immutable</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Command Handlers</h2>
+                <h3>The coordinators</h3>
+            </section>
+            <section>
+                <h2>Modeling the domain</h2>
+                <h3>The aggregate root</h3>
+            </section>
+            <section>
+                <h2>Read Models</h2>
+            </section>
+            <section>
+                <h2>Areas to Consider</h2>
                 <ul>
-                    <li><strong>Enjoy! :)</strong><a href="http://twitter.com/markdalgleish"> -@markdalgleish</a></li>
+                    <li>Concurrency - check versions before saving</li>
+                    <li>Two-phase commits - store and put message on queue</li>
+                    <li>Eventual consistency</li>
                 </ul>
             </section>
         </article>
@@ -83,6 +74,7 @@
         <script src="../bower_components/bespoke-keys/dist/bespoke-keys.js"></script>
         <script src="../bower_components/bespoke-touch/dist/bespoke-touch.js"></script>
         <script src="../bower_components/bespoke-state/dist/bespoke-state.js"></script>
+        <script src="../bower_components/bespoke-classes/dist/bespoke-classes.js"></script>
         <!-- endbower -->
         <script src="scripts/main.js"></script>
         <!-- endbuild -->

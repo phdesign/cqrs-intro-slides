@@ -18,6 +18,9 @@ article {
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
   display: none;
+  background: -webkit-radial-gradient(circle, #555a5f, #1c1e20);
+  background: radial-gradient(circle, #555a5f, #1c1e20);
+  background-color: #282a2d;
 }
 article.bespoke-parent {
   display: block;
@@ -89,6 +92,9 @@ article.bespoke-parent.white {
     position: static;
     margin: 0;
   }
+}
+.bespoke-slide.dark {
+  background: rgba(0, 0, 0, 0.7);
 }
 .bespoke-before {
   -webkit-transform: translateX(640px) translateX(-320px) rotateY(-20deg) translateX(-320px);
@@ -265,77 +271,21 @@ a.black {
 .bespoke-slide.light h1 a {
   color: #00f3a5;
 }
-.avatar {
-  display: block;
-  margin: 0 auto;
-  width: 120px;
-  height: 120px;
-  border-radius: 120px;
+.strikethrough {
+  text-decoration: line-through;
 }
-.avatar--small {
-  width: 70px;
-  height: 70px;
-}
-.logo {
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.logo--gulp {
-  background-size: 25%;
-  background-image: url(../images/gulp.png);
-}
-.gif {
+.bespoke-backdrop-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }
-.gif--fight {
-  background-image: url(../images/gif/fight.gif);
-}
-.gif--omg-grunt {
-  background-image: url(../images/gif/yeaa.gif);
-}
-.gif--omg-plugins {
-  background-image: url(../images/gif/bubbles.gif);
-}
-.gif--cowboy-reaction {
-  background-image: url(../images/gif/demitri.gif);
-}
-.gif--grunt-happy {
-  background-image: url(../images/gif/neverending.gif);
-}
-.gif--well-done {
-  background-image: url(../images/gif/slowclap.gif);
-}
-.gif--gulp {
-  background-image: url(../images/gif/ryu.gif);
-}
-.gif--gulp-api {
-  background-image: url(../images/gif/clap.gif);
-}
-.gif--no {
-  background-image: url(../images/gif/no.gif);
-}
-.gif--thats-it {
-  background-image: url(../images/gif/shigeru.gif);
-}
-.gif--vinyl {
-  background-image: url(../images/gif/vinyl.gif);
-}
-.gif--wrong-question {
-  background-image: url(../images/gif/no-answer.gif);
-}
-.gif--orchestrator {
-  background-image: url(../images/gif/conductor.gif);
-  background-size: 160%;
-  background-position: 50% -220px;
-}
-.gif--anger {
-  background-image: url(../images/gif/angry-amy.gif);
-}
-.gif--gulp-is-awesome {
-  background-image: url(../images/gif/anchorman.gif);
-}
-.gif--future {
-  background-image: url(../images/gif/future.gif);
+.space {
+  background-image: url('../images/space.jpg');
 }
